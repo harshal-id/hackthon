@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HostelOS — Warden Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">H</div>
+      <div>
+        <div class="logo-text">HostelOS</div>
+        <div class="logo-sub">Block A Management</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Core</div>
+      <div class="nav-item active" onclick="switchPanel('overview')" id="nav-overview">
+        <div class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/>
+            <rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/>
+          </svg>
+        </div>
+        <span>Overview</span>
+      </div>
+      <div class="nav-item" onclick="switchPanel('gate')" id="nav-gate">
+        <div class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 2h10v12H3z"/><path d="M6 8h4M9 6l2 2-2 2"/>
+          </svg>
+        </div>
+        <span>Gate Passes</span>
+        <div class="nav-badge">3</div>
+      </div>
+      <div class="nav-item" onclick="switchPanel('rooms')" id="nav-rooms">
+        <div class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="1" y="5" width="14" height="10" rx="1.5"/><path d="M5 5V3a3 3 0 0 1 6 0v2"/>
+          </svg>
+        </div>
+        <span>Rooms</span>
+      </div>
+      <div class="nav-item" onclick="switchPanel('complaints')" id="nav-complaints">
+        <div class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="8" cy="8" r="7"/><path d="M8 5v3.5M8 11v.5"/>
+          </svg>
+        </div>
+        <span>Complaints</span>
+        <div class="nav-badge">2</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Reports</div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M2 12V4l4-2 4 2 4-2v8l-4 2-4-2-4 2z"/>
+          </svg>
+        </div>
+        <span>Mess Voting</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 10c0 2.2-1.8 4-4 4H6a4 4 0 0 1 0-8h1M2 6c0-2.2 1.8-4 4-4h4a4 4 0 0 1 0 8H9"/>
+          </svg>
+        </div>
+        <span>Visitor Log</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="warden-card">
+        <div class="warden-avatar">RK</div>
+        <div>
+          <div class="warden-name">R. Kulkarni</div>
+          <div class="warden-role">Warden · Block A</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Overview</div>
+        <div class="topbar-meta" id="topbar-meta">Monday, 24 March 2026</div>
+      </div>
+      <div class="topbar-right">
+        <a href="/logout" class="topbar-btn" style="text-decoration:none; color:var(--red);">Logout</a>
+        <button class="topbar-btn">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="5"/><path d="M10.5 10.5L14 14"/></svg>
+          Search
+        </button>
+        <button class="topbar-btn btn-primary" onclick="showToast('📥 Report exported successfully', 'green')">
+          Export Report
+        </button>
+        <div class="notif-btn" onclick="showToast('🔔 3 notifications pending', 'blue')">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M13 10V6a5 5 0 0 0-10 0v4l-1.5 2h13L13 10z"/><path d="M6.5 14a1.5 1.5 0 0 0 3 0"/>
+          </svg>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content-area">
+
+      <!-- ── OVERVIEW PANEL ── -->
+      <div class="panel active" id="panel-overview">
+        <div class="stat-row">
+          <div class="stat-card blue">
+            <div class="stat-icon blue">🏠</div>
+            <div class="stat-num blue">148</div>
+            <div class="stat-label">Total Students</div>
+            <div class="stat-delta">↑ 4 joined this week</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-icon amber">🎫</div>
+            <div class="stat-num amber">3</div>
+            <div class="stat-label">Pending Gate Passes</div>
+            <div class="stat-delta">2 expire in &lt; 4 hrs</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon green">🛏</div>
+            <div class="stat-num green">8</div>
+            <div class="stat-label">Vacant Rooms</div>
+            <div class="stat-delta">Occupancy: 83%</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon red">⚠</div>
+            <div class="stat-num red">2</div>
+            <div class="stat-label">SLA Breaches</div>
+            <div class="stat-delta">Needs immediate action</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Activity feed -->
+          <div class="mini-card">
+            <div class="mini-card-title">Live Activity Feed</div>
+            {% for act in activities %}
+            <div class="activity-item">
+            <div class="activity-dot" style="background:{{ act.color }}"></div>
+            <div class="activity-text">
+                <strong>{{ act.title }}</strong> {{ act.desc }}
+            </div>
+            <div class="activity-time">{{ act.time }}</div>
+            </div>
+            {% endfor %}
+           
+            </div>
+          </div>
+
+          <!-- Gate pass bar chart -->
+          <div class="mini-card">
+            <div class="mini-card-title">Gate Pass Volume — This Week</div>
+            <div class="chart-bar-row">
+              <div class="chart-col">
+                <div class="chart-bar" style="height:45%"></div>
+                <div class="chart-xlbl">Mon</div>
+              </div>
+              <div class="chart-col">
+                <div class="chart-bar" style="height:60%"></div>
+                <div class="chart-xlbl">Tue</div>
+              </div>
+              <div class="chart-col">
+                <div class="chart-bar" style="height:30%"></div>
+                <div class="chart-xlbl">Wed</div>
+              </div>
+              <div class="chart-col">
+                <div class="chart-bar" style="height:75%"></div>
+                <div class="chart-xlbl">Thu</div>
+              </div>
+              <div class="chart-col">
+                <div class="chart-bar" style="height:90%; background:var(--blue-glow); border-color:var(--blue);"></div>
+                <div class="chart-xlbl">Fri</div>
+              </div>
+              <div class="chart-col">
+                <div class="chart-bar" style="height:55%"></div>
+                <div class="chart-xlbl">Sat</div>
+              </div>
+              <div class="chart-col">
+                <div class="chart-bar" style="height:20%"></div>
+                <div class="chart-xlbl">Sun</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;">
+                <span style="color:var(--text-muted)">Total this week</span><span style="color:var(--text-primary);font-weight:600;">47 passes</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;">
+                <span style="color:var(--text-muted)">Approval rate</span><span style="color:var(--green);font-weight:600;">91.5%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;">
+                <span style="color:var(--text-muted)">SMS notifications sent</span><span style="color:var(--text-primary);font-weight:600;">43</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GATE PASS PANEL ── -->
+      <div class="section-header" style="margin-top: 20px;">
+        <div class="section-title">Gate Passes</div>
+        {% if session.get("role") == "student" %}
+<button class="btn btn-primary" onclick="openModal('pass')">+ New Pass</button>
+{% endif %}
+      </div>
+
+    <div class="pass-list" id="pass-list">
+  {% for p in passes %}
+  <div class="pass-card {{ p.status }}" data-status="{{ p.status }}">
+    <div class="pass-header">
+      <div class="pass-student">
+        <div class="student-avatar">
+          {{ p.name[0] }}
+        </div>
+        <div>
+          <div class="student-name">{{ p.name }}</div>
+          <div class="student-room">Room {{ p.room }}</div>
+        </div>
+      </div>
+      <span class="badge badge-{{ p.status }}">{{ p.status }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+      <!-- ── ROOMS PANEL ── -->
+      <div class="panel" id="panel-rooms">
+        <div class="stat-row">
+          <div class="stat-card blue">
+           
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- Room map -->
+          <div class="room-map-card">
+            <div class="section-header" style="margin-bottom:16px">
+              <div class="section-title">Room Map — Block A</div>
+              <div class="filter-tabs">
+                <button class="ftab active">All</button>
+                <button class="ftab">Vacant</button>
+              </div>
+              {% if session.get("role") == "warden" %}
+<button class="btn btn-primary" onclick="openModal('room')" style="margin-left: auto;">+ Add Room</button>
+{% endif %}
+            </div>
+
+            <div class="floor-label">Floor 1</div>
+            <div class="room-grid">
+              <div class="room-cell room-occupied" onclick="showRoom('101','Aditya Sharma','Semester 3, CSE','occupied')"><div class="room-cell-num">101</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-occupied" onclick="showRoom('102','Karan Joshi','Semester 5, ECE','occupied')"><div class="room-cell-num">102</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-vacant" onclick="showRoom('103','—','Available','vacant')"><div class="room-cell-num">103</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-occupied" onclick="showRoom('104','Neha Patil','Semester 7, IT','occupied')"><div class="room-cell-num">104</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-maintenance" onclick="showRoom('105','—','Plumbing repair','maintenance')"><div class="room-cell-num">105</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-occupied" onclick="showRoom('106','Rahul Verma','Semester 1, Civil','occupied')"><div class="room-cell-num">106</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-vacant" onclick="showRoom('107','—','Available','vacant')"><div class="room-cell-num">107</div><div class="room-cell-dot"></div></div>
+              <div class="room-cell room-occupied" onclick="showRoom('108','Anjali Rao','Semester 3, Mech','occupied')"><div class="room-cell-num">108</div><div class="room-cell-dot"></div></div>
+            </div>
+
+            <div class="floor-label">Floor 2</div>
+            <div class="room-grid">
+              
+            </div>
+
+            <div class="floor-label">Floor 3</div>
+            <div class="room-grid">
+              
+            </div>
+
+            <div class="room-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Occupied</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--bg-3);border:1px solid var(--border)"></div> Vacant</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Maintenance</div>
+            </div>
+          </div>
+
+          <!-- Room detail -->
+          <div class="room-detail" id="room-detail">
+            <div style="text-align:center;color:var(--text-muted);padding:40px 0;font-size:13px;">
+              ← Click a room to view details
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPLAINTS PANEL ── -->
+      <div class="panel" id="panel-complaints">
+        <div class="stat-row">
+          <div class="stat-num blue">{{ stats.total_students }}</div>
+        <div class="stat-num amber">{{ stats.pending_passes }}</div>
+        <div class="stat-num green">{{ stats.vacant_rooms }}</div>
+        <div class="stat-num red">{{ stats.sla_breaches }}</div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <div class="section-title">Complaints & SLA Tracker</div>
+            <div class="section-meta">SLA countdown auto-escalates overdue tickets</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('complaint')">+ New Ticket</button>
+        </div>
+
+        <div class="complaint-list">
+
+
+          <div class="complaint-card warning">
+            <div class="sla-ring">
+              <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#1e2438" stroke-width="5"/><circle cx="26" cy="26" r="22" fill="none" stroke="#fbbf24" stroke-width="5" stroke-dasharray="83 55" stroke-linecap="round"/></svg>
+              <div class="sla-ring-text" style="color:var(--amber)">60%</div>
+            </div>
+            <div class="complaint-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div class="complaint-title">Ceiling fan not working — Room 207</div>
+                <span class="badge badge-open">Open</span>
+              </div>
+              <div class="complaint-meta">Raised 5h ago · Category: Electrical · SLA: 8 hours · 3 hours remaining</div>
+              <div class="complaint-footer">
+                <div class="assignee-chip">⚡ Electrician on-call</div>
+                <div class="sla-progress">
+                  <div class="sla-track"><div class="sla-fill" style="width:60%;background:var(--amber)"></div></div>
+                  <div class="sla-time">3h remaining</div>
+                </div>
+                <button class="btn" onclick="showToast('✓ Marked as in-progress', 'blue')" style="white-space:nowrap">Mark In Progress</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="complaint-card ok">
+            <div class="sla-ring">
+              <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#1e2438" stroke-width="5"/><circle cx="26" cy="26" r="22" fill="none" stroke="#34d399" stroke-width="5" stroke-dasharray="28 110" stroke-linecap="round"/></svg>
+              <div class="sla-ring-text" style="color:var(--green)">20%</div>
+            </div>
+            <div class="complaint-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div class="complaint-title">WiFi intermittent — Floor 3 common room</div>
+                <span class="badge badge-open">Open</span>
+              </div>
+              <div class="complaint-meta">Raised 1h ago · Category: Network · SLA: 12 hours · 9.5 hours remaining</div>
+              <div class="complaint-footer">
+                <div class="assignee-chip">🖥 IT staff</div>
+                <div class="sla-progress">
+                  <div class="sla-track"><div class="sla-fill" style="width:20%;background:var(--green)"></div></div>
+                  <div class="sla-time">9.5h remaining</div>
+                </div>
+                <button class="btn" onclick="showToast('✓ Marked as in-progress', 'blue')" style="white-space:nowrap">Mark In Progress</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="complaint-card done">
+            <div class="sla-ring">
+              <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#1e2438" stroke-width="5"/><circle cx="26" cy="26" r="22" fill="none" stroke="#34d399" stroke-width="5" stroke-dasharray="138 0" stroke-linecap="round"/></svg>
+              <div class="sla-ring-text" style="color:var(--green);font-size:15px">✓</div>
+            </div>
+            <div class="complaint-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div class="complaint-title">Hot water unavailable — Room 318</div>
+                <span class="badge badge-resolved">Resolved</span>
+              </div>
+              <div class="complaint-meta">Raised 3h ago · Resolved in 2.5h · SLA: 4h · <span style="color:var(--green)">Within SLA</span></div>
+              <div class="complaint-footer">
+                <div class="assignee-chip">👷 Maintenance team</div>
+                <div class="sla-progress">
+                  <div class="sla-track"><div class="sla-fill" style="width:100%;background:var(--green)"></div></div>
+                  <div class="sla-time" style="color:var(--green)">Resolved in 2.5h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </main>
+</div>
+
+
+<!-- MODALS -->
+<div id="modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center;">
+  <div class="stat-card" style="width:100%; max-width:400px; padding:24px; animation: fadeUp 0.3s; background: var(--bg-1);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h3 id="modal-title" style="font-size:16px; font-weight:700;">Add</h3>
+      <button class="btn" onclick="closeModal()" style="padding:4px 8px;">✕</button>
+    </div>
+    
+    <!-- Pass Form -->
+    <form id="form-pass" style="display:none;" onsubmit="submitForm(event, '/api/add_pass', 'form-pass')">
+      <div style="margin-bottom:12px;">
+        <label style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Student Name</label>
+        <input type="text" name="name" required style="width:100%; padding:10px; border-radius:var(--radius); border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Room Number</label>
+        <input type="text" name="room" required style="width:100%; padding:10px; border-radius:var(--radius); border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit Pass</button>
+    </form>
+
+    <!-- Room Form -->
+    <form id="form-room" style="display:none;" onsubmit="submitForm(event, '/api/add_room', 'form-room')">
+      <div style="margin-bottom:12px;">
+        <label style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Room Number</label>
+        <input type="text" name="num" required style="width:100%; padding:10px; border-radius:var(--radius); border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Status</label>
+        <select name="status" required style="width:100%; padding:10px; border-radius:var(--radius); border:1px solid var(--border); background:#1e2438; color:white;">
+          <option value="vacant">Vacant</option>
+          <option value="occupied">Occupied</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Student Name (if occupied)</label>
+        <input type="text" name="student" style="width:100%; padding:10px; border-radius:var(--radius); border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Add Room</button>
+    </form>
+
+    <!-- Complaint Form -->
+    <form id="form-complaint" style="display:none;" onsubmit="submitForm(event, '/api/add_complaint', 'form-complaint')">
+      <div style="margin-bottom:20px;">
+        <label style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Issue Title</label>
+        <input type="text" name="title" required style="width:100%; padding:10px; border-radius:var(--radius); border:1px solid var(--border); background:rgba(255,255,255,0.05); color:white;" placeholder="e.g. WiFi not working in Room 101">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit Ticket</button>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// ─────────────────────────────────────────
+// 🔄 CONFIG
+// ─────────────────────────────────────────
+const REFRESH_INTERVAL = 5000;
+const USER_ROLE = '{{ session.get("role") }}';
+
+// ─────────────────────────────────────────
+// 📊 PANEL SWITCH
+// ─────────────────────────────────────────
+const panelTitles = {
+  overview: ['Overview', 'Live Dashboard'],
+  gate: ['Gate Pass Approvals', 'Live updates'],
+  rooms: ['Room Allocation', 'Real-time'],
+  complaints: ['Complaints & SLA', 'Live tracking']
+};
+
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+
+  const meta = panelTitles[name];
+  document.getElementById('topbar-title').textContent = meta[0];
+  document.getElementById('topbar-meta').textContent = meta[1];
+}
+let passChartInstance = null;
+function loadChart() {
+  fetch('/api/chart/passes')
+    .then(res => res.json())
+    .then(data => {
+
+      const ctx = document.getElementById('passChart');
+      if (passChartInstance) {
+          passChartInstance.destroy();
+      }
+
+      passChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Passes',
+            data: data.values
+          }]
+        },
+        options: {
+          responsive: true
+        }
+      });
+
+    });
+}
+// ─────────────────────────────────────────
+// 📦 LOAD ALL DATA
+// ─────────────────────────────────────────
+function loadAll() {
+  loadPasses();
+  loadRooms();
+  loadComplaints();
+  loadChart();
+}
+
+// ─────────────────────────────────────────
+// 🎫 PASSES
+// ─────────────────────────────────────────
+function loadPasses() {
+  fetch('/api/passes')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('pass-list');
+      container.innerHTML = '';
+
+      data.forEach(p => {
+        container.innerHTML += `
+          <div class="pass-card ${p.status}" data-status="${p.status}">
+            <div class="pass-header">
+              <div class="pass-student">
+                <div class="student-avatar">${getInitials(p.name)}</div>
+                <div>
+                  <div class="student-name">${p.name}</div>
+                  <div class="student-room">Room ${p.room}</div>
+                </div>
+              </div>
+              <span class="badge badge-${p.status}">${p.status}</span>
+            </div>
+
+            ${p.status === 'pending' && USER_ROLE === 'warden' ? `
+              <div class="pass-actions">
+                <button class="btn btn-approve" onclick="approvePass(${p.id})">Approve</button>
+                <button class="btn btn-reject" onclick="rejectPass(${p.id})">Reject</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+    });
+}
+
+// ─────────────────────────────────────────
+// 🛏 ROOMS
+// ─────────────────────────────────────────
+function loadRooms() {
+  fetch('/api/rooms')
+    .then(res => res.json())
+    .then(data => {
+      const grid = document.querySelector('.room-grid');
+      grid.innerHTML = '';
+
+      data.forEach(r => {
+        grid.innerHTML += `
+          <div class="room-cell room-${r.status}"
+               onclick="showRoom('${r.num}','${r.student || '—'}','', '${r.status}')">
+            <div class="room-cell-num">${r.num}</div>
+            <div class="room-cell-dot"></div>
+          </div>
+        `;
+      });
+    });
+}
+
+// ─────────────────────────────────────────
+// ⚠️ COMPLAINTS
+// ─────────────────────────────────────────
+function loadComplaints() {
+  fetch('/api/complaints')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.querySelector('.complaint-list');
+      container.innerHTML = '';
+
+      data.forEach(c => {
+        container.innerHTML += `
+          <div class="complaint-card ${c.status}">
+            <div class="complaint-body">
+              <div class="complaint-title">${c.title}</div>
+              <span class="badge badge-${c.status}">${c.status}</span>
+            </div>
+          </div>
+        `;
+      });
+    });
+}
+
+// ─────────────────────────────────────────
+// ✅ ACTIONS (FIXED)
+// ─────────────────────────────────────────
+function approvePass(id) {
+  fetch('/api/approve/' + id, { method: 'POST' })
+    .then(() => {
+      showToast('✓ Approved', 'green');
+      loadPasses();
+    });
+}
+
+function rejectPass(id) {
+  fetch('/api/reject/' + id, { method: 'POST' })
+    .then(() => {
+      showToast('✕ Rejected', 'red');
+      loadPasses();
+    });
+}
+
+// ─────────────────────────────────────────
+// 🔍 FILTER
+// ─────────────────────────────────────────
+function filterPasses(type, el) {
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelectorAll('.pass-card').forEach(c => {
+    const s = c.dataset.status;
+    c.style.display = (type === 'all' || s === type) ? '' : 'none';
+  });
+}
+
+// ─────────────────────────────────────────
+// 🧠 HELPERS
+// ─────────────────────────────────────────
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase();
+}
+
+// ─────────────────────────────────────────
+// 🔔 TOAST
+// ─────────────────────────────────────────
+function showToast(msg, color) {
+  const colorMap = {
+    green: '#34d399',
+    red: '#f87171',
+    blue: '#4e8ef7',
+    amber: '#fbbf24'
+  };
+
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+
+  t.className = 'toast';
+  t.innerHTML = `
+    <div style="width:6px;height:6px;border-radius:50%;background:${colorMap[color]}"></div>
+    ${msg}
+  `;
+
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+
+// ─────────────────────────────────────────
+// 📝 MODALS & FORMS
+// ─────────────────────────────────────────
+function openModal(type) {
+  document.getElementById('modal-backdrop').style.display = 'flex';
+  document.getElementById('form-pass').style.display = 'none';
+  document.getElementById('form-room').style.display = 'none';
+  document.getElementById('form-complaint').style.display = 'none';
+  
+  if (type === 'pass') {
+    document.getElementById('modal-title').innerText = 'New Gate Pass';
+    document.getElementById('form-pass').style.display = 'block';
+  } else if (type === 'room') {
+    document.getElementById('modal-title').innerText = 'Add / Update Room';
+    document.getElementById('form-room').style.display = 'block';
+  } else if (type === 'complaint') {
+    document.getElementById('modal-title').innerText = 'New Complaint Ticket';
+    document.getElementById('form-complaint').style.display = 'block';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').style.display = 'none';
+}
+
+function submitForm(e, url, formId) {
+  e.preventDefault();
+  const form = document.getElementById(formId);
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      showToast('✓ Successfully Added', 'green');
+      closeModal();
+      form.reset();
+      loadAll();
+    } else {
+      showToast('✕ Error adding item', 'red');
+    }
+  }).catch(() => showToast('✕ Network Error', 'red'));
+}
+
+// ─────────────────────────────────────────
+// 🚀 AUTO REFRESH
+// ─────────────────────────────────────────
+setInterval(loadAll, REFRESH_INTERVAL);
+
+// ─────────────────────────────────────────
+// 🟢 INIT
+// ─────────────────────────────────────────
+loadAll();
+
+</script>
+</body>
+</html>

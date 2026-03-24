@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HostelOS — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 15% 50%, rgba(78, 142, 247, 0.08), transparent 35%),
+                      radial-gradient(circle at 85% 30%, rgba(167, 139, 250, 0.08), transparent 35%);
+  }
+  .login-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .login-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logo-mark {
+    margin: 0 auto 16px;
+    width: 48px; height: 48px;
+    font-size: 20px;
+  }
+  .login-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .input-group {
+    margin-bottom: 20px;
+  }
+  .input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: rgba(30, 36, 56, 0.5);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: rgba(30, 36, 56, 0.8);
+    box-shadow: 0 0 0 3px var(--blue-dim);
+  }
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .flash-msg {
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--red-dim);
+    color: var(--red);
+    font-size: 13px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(248,113,113,0.3);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-header">
+    <div class="logo-mark">H</div>
+    <div class="login-title">Sign in to HostelOS</div>
+  </div>
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-msg">{{ messages[0] }}</div>
+    {% endif %}
+  {% endwith %}
+
+  <form action="/login" method="POST">
+    <div class="input-group">
+      <label>Username</label>
+      <input type="text" name="username" placeholder="warden or student" required autofocus>
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" name="password" placeholder="••••••••" required>
+    </div>
+    <button type="submit" class="btn btn-primary login-btn">Sign In</button>
+  </form>
+  
+  <div style="text-align:center; margin-top:24px; font-size:12px; color:var(--text-muted);">
+    Demo Accounts: <br>
+    <code style="color:var(--text-secondary)">warden / warden</code><br>
+    <code style="color:var(--text-secondary)">student / student</code>
+  </div>
+</div>
+
+</body>
+</html>
